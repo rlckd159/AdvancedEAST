@@ -83,7 +83,7 @@ if __name__ == '__main__' :
     ap.add_argument("-t", "--to", type=int, default=10,
                     help="max number of line")
 
-    ap.add_argument("-s", "--start", type=int, default=1,
+    ap.add_argument("-s", "--start", type=int, default=0,
                     help="start index of genererated images")
     ap.add_argument("-e", "--end", type=int, default=1000,
                     help="end index of genererated images")
@@ -118,7 +118,7 @@ if __name__ == '__main__' :
     txt_lines = []
 
     # Generate 5 new images
-    for i in tqdm(range(start_num, end_num+1)):
+    for i in tqdm(range(start_num, end_num)):
         rnd_line_num = random.randint(line_min, line_max)
         foreground_paths = [random.choice(foregrounds) for fore_i in range(rnd_line_num)]
         #print('leng   : ' , len(foreground_paths))
