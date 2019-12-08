@@ -2,6 +2,7 @@ import os
 import random
 import numpy as np
 import errno
+import argparse
 from PIL import Image
 from tqdm import tqdm
 
@@ -33,7 +34,7 @@ def compose_images(foreground_paths, background_path):
         foreground_path = foreground_paths[line_i]
         # Make sure the foreground path is valid and open the image
         assert os.path.exists(foreground_path), 'image path does not exist: {}'.format(foreground_path)
-        assert os.path.splitext(foreground_path)[1].lower() == '.png', 'foreground must be a .png file'
+        assert os.path.splitext(foreground_path)[1].lower() == '.png', 'foreground must be a .png file : {}'.format(foreground_path)
         foreground = Image.open(foreground_path)
         fw, fh = foreground.size
         ratio = min(bw/fw, (bh/rnd_line_num)/fh/2.0, 1.0)
@@ -76,17 +77,23 @@ def compose_images(foreground_paths, background_path):
     return composite, bboxes
 
 if __name__ == '__main__' :
+    ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--from", type=int, default=1,
                     help="min number of line")
     ap.add_argument("-t", "--to", type=int, default=10,
                     help="max number of line")
-    ap.add_argument("-n", "--num", type=int, default=1000,
-                    help="number of genererated images")
+
+    ap.add_argument("-s", "--start", type=int, default=1,
+                    help="start index of genererated images")
+    ap.add_argument("-e", "--end", type=int, default=1000,
+                    help="end index of genererated images")
 
     args = vars(ap.parse_args())
     line_min = args["from"]
     line_max = args["to"]
-    case_num = args["num"]
+    start_num = args["start"]
+    end_num = args["end"]
+
     # Get lists of foreground and background image paths
     dataset_dir = os.path.dirname(__file__)
     backgrounds_dir = os.path.join(dataset_dir, 'backgrounds')
@@ -111,7 +118,7 @@ if __name__ == '__main__' :
     txt_lines = []
 
     # Generate 5 new images
-    for i in tqdm(range(case_num)):
+    for i in tqdm(range(start_num, end_num+1)):
         rnd_line_num = random.randint(line_min, line_max)
         foreground_paths = [random.choice(foregrounds) for fore_i in range(rnd_line_num)]
         #print('leng   : ' , len(foreground_paths))
