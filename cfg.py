@@ -14,6 +14,7 @@ lambda_side_vertex_coord_loss = 1.0
 
 total_img = 1000
 validation_split_ratio = 0.1
+test_split_ratio = 0.0
 max_train_img_size = int(train_task_id[-3:])
 max_predict_img_size = int(train_task_id[-3:])  # 2400
 assert max_train_img_size in [256, 384, 512, 640, 736], \
@@ -30,6 +31,8 @@ steps_per_epoch = total_img * (1 - validation_split_ratio) // batch_size
 validation_steps = total_img * validation_split_ratio // batch_size
 
 data_dir = 'scene_formula'
+test_image_dir_name = 'test_image/'
+test_text_dir_name = 'test_text/'
 origin_image_dir_name = 'generated_image/'
 origin_txt_dir_name = 'generated_text/'
 train_image_dir_name = 'images_%s/' % train_task_id
@@ -41,6 +44,7 @@ draw_gt_quad = True
 draw_act_quad = True
 val_fname = 'val_%s.txt' % train_task_id
 train_fname = 'train_%s.txt' % train_task_id
+test_fname = 'test_%s.txt' % train_task_id
 # in paper it's 0.3, maybe to large to this problem
 shrink_ratio = 0.2
 # pixels between 0.2 and 0.6 are side pixels

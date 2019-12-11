@@ -170,10 +170,13 @@ def preprocess():
 
     random.shuffle(train_val_set)
     val_count = int(cfg.validation_split_ratio * len(train_val_set))
+    test_val_count = int((cfg.test_split_ratio+cfg.validation_split_ratio) * len(train_val_set))
     with open(os.path.join(data_dir, cfg.val_fname), 'w') as f_val:
         f_val.writelines(train_val_set[:val_count])
+    with open(os.path.join(data_dir, cfg.test_fname), 'w') as f_test:
+        f_val.writelines(train_test_set[val_count:test_val_count_count])
     with open(os.path.join(data_dir, cfg.train_fname), 'w') as f_train:
-        f_train.writelines(train_val_set[val_count:])
+        f_train.writelines(train_val_set[test_val_count:])
 
 
 if __name__ == '__main__':

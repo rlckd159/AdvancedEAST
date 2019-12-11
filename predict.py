@@ -10,6 +10,7 @@ from label import point_inside_of_quad
 from network import East
 from preprocess import resize_image
 from nms import nms
+import os
 
 
 def sigmoid(x):
@@ -32,7 +33,7 @@ def cut_text_line(geo, scale_ratio_w, scale_ratio_h, im_array, img_path, s):
     sub_im.save(img_path + '_subim%d.jpg' % s)
 
 
-def predict(east_detect, img_path, pixel_threshold, quiet=False):
+def predict(east_detect, img_path, pixel_threshold, result_path , quiet=False):
     img = image.load_img(img_path)
     d_wight, d_height = resize_image(img, cfg.max_predict_img_size)
     img = img.resize((d_wight, d_height), Image.NEAREST).convert('RGB')
@@ -69,7 +70,7 @@ def predict(east_detect, img_path, pixel_threshold, quiet=False):
                        (px - 0.5 * cfg.pixel_size, py + 0.5 * cfg.pixel_size),
                        (px - 0.5 * cfg.pixel_size, py - 0.5 * cfg.pixel_size)],
                       width=line_width, fill=line_color)
-        im.save(img_path + '_act.jpg')
+        im.save(os.path.join(result_path, os.path.basename(img_path)[1] + '_act.jpg'))
         quad_draw = ImageDraw.Draw(quad_im)
         txt_items = []
         for score, geo, s in zip(quad_scores, quad_after_nms,
@@ -84,14 +85,14 @@ def predict(east_detect, img_path, pixel_threshold, quiet=False):
                     cut_text_line(geo, scale_ratio_w, scale_ratio_h, im_array,
                                   img_path, s)
                 rescaled_geo = geo / [scale_ratio_w, scale_ratio_h]
-                rescaled_geo_list = np.reshape(rescaled_geo, (8,)).tolist()
+                rescaled_geo_list = np.round(np.reshape(rescaled_geo, (8,))).tolist()
                 txt_item = ','.join(map(str, rescaled_geo_list))
                 txt_items.append(txt_item + '\n')
             elif not quiet:
                 print('quad invalid with vertex num less then 4.')
-        quad_im.save(img_path + '_predict.jpg')
+        quad_im.save(os.path.join(result_path, os.path.basename(img_path)[1] + '_predict.jpg'))
         if cfg.predict_write2txt and len(txt_items) > 0:
-            with open(img_path[:-4] + '.txt', 'w') as f_txt:
+            with open(os.path.join(result_path, os.path.basename(img_path)[1] + '.txt'), 'w') as f_txt:
                 f_txt.writelines(txt_items)
 
 
@@ -134,6 +135,9 @@ def parse_args():
     parser.add_argument('--threshold', '-t',
                         default=cfg.pixel_threshold,
                         help='pixel activation threshold')
+    parser.add_argument('--result', '-r',
+                        default='demo',
+                        help='result path')
     return parser.parse_args()
 
 
@@ -141,9 +145,10 @@ if __name__ == '__main__':
     args = parse_args()
     img_path = args.path
     threshold = float(args.threshold)
-    print(img_path, threshold)
+    result_path = args.result
+    print(img_path, threshold, result_path)
 
     east = East()
     east_detect = east.east_network()
     east_detect.load_weights(cfg.saved_model_weights_file_path)
-    predict(east_detect, img_path, threshold)
+    predict(east_detect, img_path, threshold, result_path)
