@@ -70,7 +70,7 @@ def predict(east_detect, img_path, pixel_threshold, result_path , quiet=False):
                        (px - 0.5 * cfg.pixel_size, py + 0.5 * cfg.pixel_size),
                        (px - 0.5 * cfg.pixel_size, py - 0.5 * cfg.pixel_size)],
                       width=line_width, fill=line_color)
-        im.save(os.path.join(result_path, os.path.basename(img_path)[1] + '_act.jpg'))
+        im.save(os.path.join(result_path, os.path.basename(img_path)[:-4] + '_act.jpg'))
         quad_draw = ImageDraw.Draw(quad_im)
         txt_items = []
         for score, geo, s in zip(quad_scores, quad_after_nms,
@@ -85,14 +85,15 @@ def predict(east_detect, img_path, pixel_threshold, result_path , quiet=False):
                     cut_text_line(geo, scale_ratio_w, scale_ratio_h, im_array,
                                   img_path, s)
                 rescaled_geo = geo / [scale_ratio_w, scale_ratio_h]
-                rescaled_geo_list = np.round(np.reshape(rescaled_geo, (8,))).tolist()
+                rescaled_geo_list = np.reshape(rescaled_geo, (8,)).tolist()
+                rescaled_geo_list =  [round(x) for x in rescaled_geo_list]
                 txt_item = ','.join(map(str, rescaled_geo_list))
                 txt_items.append(txt_item + '\n')
             elif not quiet:
                 print('quad invalid with vertex num less then 4.')
-        quad_im.save(os.path.join(result_path, os.path.basename(img_path)[1] + '_predict.jpg'))
+        quad_im.save(os.path.join(result_path, os.path.basename(img_path)[:-4] + '_predict.jpg'))
         if cfg.predict_write2txt and len(txt_items) > 0:
-            with open(os.path.join(result_path, os.path.basename(img_path)[1] + '.txt'), 'w') as f_txt:
+            with open(os.path.join(result_path, os.path.basename(img_path)[:-4] + '.txt'), 'w') as f_txt:
                 f_txt.writelines(txt_items)
 
 
