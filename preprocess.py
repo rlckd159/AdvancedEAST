@@ -174,7 +174,7 @@ def preprocess():
     with open(os.path.join(data_dir, cfg.val_fname), 'w') as f_val:
         f_val.writelines(train_val_set[:val_count])
     with open(os.path.join(data_dir, cfg.test_fname), 'w') as f_test:
-        f_val.writelines(train_test_set[val_count:test_val_count_count])
+        f_test.writelines(train_val_set[val_count:test_val_count])
     with open(os.path.join(data_dir, cfg.train_fname), 'w') as f_train:
         f_train.writelines(train_val_set[test_val_count:])
 

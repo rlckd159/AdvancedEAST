@@ -2,7 +2,7 @@ import os
 
 train_task_id = '3T512'
 initial_epoch = 0
-epoch_num = 12
+epoch_num = 4
 lr = 1e-3
 decay = 5e-4
 # clipvalue = 0.5  # default 0.5, 0 means no clip
@@ -12,7 +12,7 @@ lambda_inside_score_loss = 4.0
 lambda_side_vertex_code_loss = 1.0
 lambda_side_vertex_coord_loss = 1.0
 
-total_img = 1000
+total_img = 2000
 validation_split_ratio = 0.1
 test_split_ratio = 0.0
 max_train_img_size = int(train_task_id[-3:])
@@ -30,7 +30,7 @@ else:
 steps_per_epoch = total_img * (1 - validation_split_ratio) // batch_size
 validation_steps = total_img * validation_split_ratio // batch_size
 
-data_dir = 'scene_formula'
+data_dir = 'scene_formula_data'
 test_image_dir_name = 'test_image/'
 test_text_dir_name = 'test_text/'
 origin_image_dir_name = 'generated_image/'
