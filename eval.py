@@ -3,9 +3,9 @@ import argparse
 import os
 import numpy as np
 from shapely.geometry import Polygon
-#import predict
+import predict
 import cfg
-#from network import East
+from network import East
 
 def cal_score(gt_total, det_total, matched) :
     precision = matched/det_total
@@ -86,11 +86,11 @@ if __name__ == '__main__':
     test_text_dir = os.path.join(test_dir, cfg.test_text_dir_name)
     test_images = [os.path.join(test_image_dir, file_name) for file_name in os.listdir(test_image_dir)]
 
-    # east = East()
-    # east_detect = east.east_network()
-    # east_detect.load_weights(cfg.saved_model_weights_file_path)
-    # for test_case in test_images :
-    #     predict.predict(east_detect, test_case, threshold, result_path)
+    east = East()
+    east_detect = east.east_network()
+    east_detect.load_weights(cfg.saved_model_weights_file_path)
+    for test_case in test_images :
+        predict.predict(east_detect, test_case, threshold, result_path)
 
     precision, recall, f1_score = evaluation(test_text_dir, result_path)
     print(precision, recall, f1_score)

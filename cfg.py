@@ -7,12 +7,12 @@ lr = 1e-3
 decay = 5e-4
 # clipvalue = 0.5  # default 0.5, 0 means no clip
 patience = 5
-load_weights = False
+load_weights = True
 lambda_inside_score_loss = 4.0
 lambda_side_vertex_code_loss = 1.0
 lambda_side_vertex_coord_loss = 1.0
 
-total_img = 2000
+total_img = 1000
 validation_split_ratio = 0.1
 test_split_ratio = 0.0
 max_train_img_size = int(train_task_id[-3:])
